@@ -1,12 +1,19 @@
 import { CheckIcon } from '@heroicons/react/solid'
+import { Product } from '@stripe/firestore-stripe-payments'
 import Head from 'next/head'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import useAuth from '../hooks/useAuth'
+import Table from './Table'
 
-function Plans() {
+interface Props {
+  products: Product[]
+}
+
+function Plans({products}:Props) {
 
   const {logout} = useAuth()
+  const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2])
 
   return (
     <div>
@@ -49,11 +56,16 @@ function Plans() {
           </ul>
           <div className='mt-4 flex flex-col space-y-4 '>
             <div className='flex w-full items-center justify-center self-end md:w-3/5'>
-              <div className='planBox'>standard</div>
-              <div className='planBox'>standard</div>
-              <div className='planBox'>standard</div>
-            </div>
-            {/* <Table /> */}
+               {products.map((product) => 
+              <div 
+              className={`planBox ${selectedPlan?.id === product.id ? 'opacity-100' : 'opacity-60'}`}
+              onClick={() => setSelectedPlan(product)}
+              key={product.id}>
+                {product.name}
+              </div>
+                )}
+            </div> 
+            <Table products={products} selectedPlan={selectedPlan} /> 
             <button>Subscribe</button>
           </div>
         </main>
