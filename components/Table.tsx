@@ -1,3 +1,4 @@
+import { CheckIcon } from '@heroicons/react/solid'
 import { Product } from '@stripe/firestore-stripe-payments'
 import React from 'react'
 
@@ -21,7 +22,7 @@ function Table({products, selectedPlan}:Props) {
                 : 'text-[gray]'
             }`}
             >
-               {product.prices[0].unit_amount! / 100} EUROS
+               {product.prices[0].unit_amount! / 100} euros
             </td>
           ))}
         </tr>
@@ -37,6 +38,40 @@ function Table({products, selectedPlan}:Props) {
             }`}
             >
                {product.metadata.videoQuality} 
+            </td>
+          ))}
+        </tr>
+        <tr className="tableRow">
+          <td className="tableDataTitle">Resolution</td>
+          {products.map((product) => (
+            <td
+              className={`tableDataFeature ${
+                selectedPlan?.id === product.id
+                  ? 'text-[#E50914]'
+                  : 'text-[gray]'
+              }`}
+              key={product.id}
+            >
+              {product.metadata.resolution} 
+            </td>
+          ))}
+        </tr>
+        <tr className="tableRow">
+          <td className="tableDataTitle">
+            Watch on your TV, computer, mobile phone and tablet
+          </td>
+          {products.map((product) => (
+            <td
+              className={`tableDataFeature ${
+                selectedPlan?.id === product.id
+                  ? 'text-[#E50914]'
+                  : 'text-[gray]'
+              }`}
+              key={product.id}
+            >
+              {product.metadata.portability === 'true' && (
+                <CheckIcon className="inline-block h-8 w-8" />
+              )}
             </td>
           ))}
         </tr>
