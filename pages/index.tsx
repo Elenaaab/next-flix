@@ -43,7 +43,7 @@ const Home = ({
     if (loading || subscription === null) return null
 
     // Il faut souscrire à un abonnement payant via le test mode de stripe le fonctionnement conditions réelles
-    
+
     if (subscription) return (<Plans products={products} />)
     // if (!subscription) return (<Plans products={products} />)
 
@@ -62,6 +62,7 @@ const Home = ({
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />
           {/* My List components */}
+          
           <Row title="Comedies" movies={comedyMovies} />
           <Row title="Scary Movies" movies={horrorMovies} />
           <Row title="Romance Movies" movies={romanceMovies} />
