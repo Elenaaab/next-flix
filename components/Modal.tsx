@@ -2,19 +2,24 @@ import React, { useEffect, useState } from 'react'
 import MuiModal from '@mui/material/Modal'
 import { useRecoilState } from 'recoil'
 import { modalState, movieState } from '../atoms/modalAtom'
-import { PlusIcon, ThumbUpIcon, VolumeOffIcon, VolumeUpIcon, XIcon } from '@heroicons/react/solid'
+import { CheckIcon, PlusIcon, ThumbUpIcon, VolumeOffIcon, VolumeUpIcon, XIcon } from '@heroicons/react/solid'
 import { Genre, Element } from '../types'
 import ReactPlayer from 'react-player/lazy'
 import { FaPlay } from 'react-icons/fa'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { db } from '../firebase'
+import useAuth from '../hooks/useAuth'
 
 
 function Modal() {
   const [showModal, setShowModal] = useRecoilState(modalState)
   const [movie, setMovie] = useRecoilState(movieState)
   const [trailer, setTrailer] = useState('')
-  const [data, setData] = useState()
+  const [addedToList, setAddedToList] = useState(false)
   const [genres, setGenres] = useState<Genre[]>([])
   const [muted, setMuted] = useState(true)
+
+  const { user } = useAuth()
 
 
   useEffect(() => {
@@ -45,6 +50,12 @@ function Modal() {
     setShowModal(false)
   }
 
+  const handleList = async () => {
+    if (addedToList) {
+      await deleteDoc(doc(db, "customers", user!.uid, "myList", movie?.id.toString()!)
+      )
+    }
+  }
 
   return (
    <MuiModal 
@@ -74,8 +85,14 @@ function Modal() {
             <FaPlay className="h-7 w-7 text-black" />
             Play
           </button>
-          <button className='modalButton'>
+          <button 
+          className='modalButton'
+          onClick={handleList}>
+          { addedToList ? (
+            <CheckIcon className='h-7 w-7'/>
+            ):(
             <PlusIcon className='h-7 w-7'/>
+          )}
           </button>
           <button className='modalButton'>
             <ThumbUpIcon className='h-7 w-7'/>

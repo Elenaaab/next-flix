@@ -1,1 +1,1 @@
-# Typescript + Next.js + Tailwind + Firebase + Stripe + Material UI
+# Typescript + Next.js + Tailwind + Firebase + Stripe + Material UI + React Hot Toast + React Player
