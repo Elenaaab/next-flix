@@ -1,27 +1,28 @@
 import { collection, DocumentData, onSnapshot } from 'firebase/firestore'
-import React, { useEffect, useState } from 'react'
-import { Snapshot } from 'recoil'
+import { useEffect, useState } from 'react'
 import { db } from '../firebase'
 import { Movie } from '../types'
 
-function useList(uid:string | undefined) {
+function useList(uid: string | undefined) {
+  const [list, setList] = useState<DocumentData[] | Movie[]>([])
 
-  const [list, setList] = useState<Movie[] | DocumentData[]>([])
+  useEffect(() => {
+    if (!uid) return
 
-  useEffect(()=> {
-    if(!uid) return
-    return onSnapshot(collection(db, "customers", uid, "myList"), 
-    (snapshot) => {
-      setList(snapshot.docs.map((doc) => ({
-          id:doc.id,
-          ...doc.data(),
-      }))
-    )})
-  },[db, uid])
+    return onSnapshot(
+      collection(db, 'customers', uid, 'myList'),
+      (snapshot) => {
+        setList(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        )
+      }
+    )
+  }, [db, uid])
 
-
-  return 
-    list
+  return list
 }
 
 export default useList

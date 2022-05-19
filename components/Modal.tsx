@@ -3,10 +3,10 @@ import MuiModal from '@mui/material/Modal'
 import { useRecoilState } from 'recoil'
 import { modalState, movieState } from '../atoms/modalAtom'
 import { CheckIcon, PlusIcon, ThumbUpIcon, VolumeOffIcon, VolumeUpIcon, XIcon } from '@heroicons/react/solid'
-import { Genre, Element } from '../types'
+import { Genre, Element, Movie } from '../types'
 import ReactPlayer from 'react-player/lazy'
 import { FaPlay } from 'react-icons/fa'
-import { deleteDoc, doc, setDoc } from 'firebase/firestore'
+import { collection, deleteDoc, doc, DocumentData, onSnapshot, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import useAuth from '../hooks/useAuth'
 import toast, { Toaster } from 'react-hot-toast'
@@ -19,9 +19,19 @@ function Modal() {
   const [addedToList, setAddedToList] = useState(false)
   const [genres, setGenres] = useState<Genre[]>([])
   const [muted, setMuted] = useState(true)
+  const [movies, setMovies] = useState<DocumentData[] | Movie[]>([])
 
   const { user } = useAuth()
 
+  const toastStyle = {
+    background: 'white',
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: '16px',
+    padding: '15px',
+    borderRadius: '9999px',
+    maxWidth: '1000px',
+  }
 
   useEffect(() => {
     if (!movie) return
@@ -43,6 +53,25 @@ function Modal() {
           setGenres(data.genres)
       }
     }
+
+      // Find all the movies in the user's list
+    useEffect(() => {
+    if (user) {
+      return onSnapshot(
+        collection(db, 'customers', user.uid, 'myList'),
+        (snapshot) => setMovies(snapshot.docs)
+      )
+    }
+  }, [db, movie?.id])
+
+  // Check if the movie is already in the user's list
+    useEffect(
+    () =>
+      setAddedToList(
+        movies.findIndex((result) => result.data().id === movie?.id) !== -1
+      ),
+    [movies]
+  )
 
     fetchMovie()
   }, [movie])

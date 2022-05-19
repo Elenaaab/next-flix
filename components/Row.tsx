@@ -1,11 +1,12 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { DocumentData } from 'firebase/firestore'
 import React, { useRef, useState } from 'react'
 import { Movie } from '../types'
 import Thumbnail from './Thumbnail'
 
 interface Props {
   title: string,
-  movies: Movie[]
+  movies: Movie[] | DocumentData[]
 }
 function Row({ title, movies }: Props) {
   const rowRef = useRef<HTMLDivElement>(null)
